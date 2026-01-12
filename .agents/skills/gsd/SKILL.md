@@ -19,6 +19,22 @@ GSD is a context engineering system designed for solo developers working with AI
 
 ## Workflow
 
+### Simple Workflow (Recommended)
+
+Use `/work` as your single entry point:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        /work                                │
+├─────────────────────────────────────────────────────────────┤
+│  1. LEARN    - Check lessons for relevant past learnings    │
+│  2. DO       - Route to appropriate GSD action              │
+│  3. CAPTURE  - Create retrospective lesson when done        │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Full Workflow (Manual Control)
+
 ```
 ┌─────────────────┐
 │   new-project   │  ← Capture vision, detect brownfield
@@ -62,6 +78,7 @@ Load the gsd/plan-phase skill for phase 02
 
 | Skill | Purpose | When to Use |
 |-------|---------|-------------|
+| [work](./work/SKILL.md) | **Unified workflow loop** | **Start here - combines lessons + GSD + retrospective** |
 | [new-project](./new-project/SKILL.md) | Initialize project with deep questioning | Starting fresh or onboarding existing project |
 | [create-roadmap](./create-roadmap/SKILL.md) | Break project into phases | After project initialization |
 | [plan-phase](./plan-phase/SKILL.md) | Create executable PLAN.md | Before working on a phase |
@@ -134,6 +151,7 @@ Detailed guidance in [./references/](./references/):
 
 | Command | Action |
 |---------|--------|
+| "/work" | **Start unified workflow (recommended)** |
 | "Start new project" | Load new-project skill |
 | "Create roadmap" | Load create-roadmap skill |
 | "Plan phase X" | Load plan-phase skill |

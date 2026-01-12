@@ -6,13 +6,16 @@ See @.cursor/rules/convex_rules.mdc for Convex guidelines.
 
 ```bash
 # Type checking
-npm run tsc --noEmit
+npx tsc --noEmit
 
 # Convex type checking
 npx convex dev --once --typecheck=enable 2>&1 | tail -20
 
 # Development server
 npm run dev
+
+# Linting
+npm run lint
 
 # Build
 npm run build
@@ -48,24 +51,35 @@ Security is implemented through specialized skills at `.agents/skills/security/`
 
 ## Project Management (GSD)
 
-Project planning and execution uses the **Get Shit Done (GSD)** system with slash commands.
+Project planning and execution uses the **Get Shit Done (GSD)** system.
 
-### Commands
+### Quick Start: The `/work` Command
+
+**Use `/work` as your single entry point.** It handles everything:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        /work                                │
+├─────────────────────────────────────────────────────────────┤
+│  1. LEARN    - Auto-check lessons for relevant learnings    │
+│  2. DO       - Route to appropriate GSD action              │
+│  3. CAPTURE  - Prompt for retrospective when done           │
+└─────────────────────────────────────────────────────────────┘
+```
+
+That's it. Just say `/work` and the system handles the rest.
+
+### All Commands (for manual control)
 
 | Command | Purpose |
 |---------|---------|
+| `/work` | **Unified workflow (recommended)** |
 | `/gsd` | Check status and route to next action |
 | `/new-project` | Initialize new project with deep questioning |
 | `/roadmap` | Create phases from requirements |
 | `/plan` | Create PLAN.md for next phase |
 | `/execute` | Run current plan with atomic commits |
 | `/progress` | Show status and next steps |
-
-### Workflow
-
-```
-/new-project → /roadmap → /plan → /execute → /progress
-```
 
 ### Key Principles
 
@@ -74,12 +88,6 @@ Project planning and execution uses the **Get Shit Done (GSD)** system with slas
 3. **Context Window Awareness**: Quality degrades at 50%+ usage
 4. **Atomic Commits**: One commit per task
 5. **State Is Sacred**: STATE.md tracks all decisions and progress
-
-### Quick Start
-
-- **New project**: `/new-project`
-- **Resume work**: `/gsd` or `/progress`
-- **Plan next phase**: `/plan`
 
 ### Configuration
 
@@ -90,30 +98,23 @@ Stored in `.planning/config.json`:
 ### Supporting Skills
 
 Detailed templates and references at `.agents/skills/gsd/`:
+- `work/` - Unified workflow (lessons + GSD + retrospective)
 - `templates/` - PROJECT.md, ROADMAP.md, PLAN.md, STATE.md, SUMMARY.md
 - `references/` - principles.md, questioning.md, plan-format.md, git-integration.md
 
 ## Dynamic Lessons Library
 
-**IMPORTANT**: Before starting any new work, ALWAYS check `.agents/skills/lessons/` for relevant past learnings.
+Lessons are automatically searched by `/work` and captured when phases complete.
 
 - **Location**: `.agents/skills/lessons/*/SKILL.md`
-- **Created by**: retrospective command after completing work
-- **Contains**: What worked, what failed, exact parameters, lessons learned from actual sessions
+- **Auto-searched**: When you run `/work`, relevant lessons are found and applied
+- **Auto-prompted**: When a phase completes, you're prompted to capture learnings
 
-### Examples of lessons you might find
+### Manual Commands (if needed)
 
-- `lessons/implementing-rate-limiting/` - Rate limiting implementation learnings
-- `lessons/fixing-csrf-validation/` - CSRF debugging experiences
-- `lessons/optimizing-convex-queries/` - Database query optimization findings
-- `lessons/debugging-clerk-webhooks/` - Webhook troubleshooting solutions
+| Command | Purpose |
+|---------|---------|
+| `/advise` | Manually search lessons |
+| `/retrospective` | Manually capture learnings |
 
-### How to use lessons
-
-1. **BEFORE starting work**: Check if similar work was done before by scanning `.agents/skills/lessons/`
-2. **READ** relevant lesson SKILL.md files to learn from past successes and failures
-3. **APPLY** exact parameters and approaches that worked
-4. **AVOID** approaches documented in "Failed Attempts" tables
-5. **AFTER completing work**: Capture learnings for future sessions
-
-> Note: Lessons folder may be empty initially and grows over time. Each lesson is a valuable asset that makes future work faster and more successful.
+> Note: Lessons folder may be empty initially and grows over time. Each lesson makes future work faster.
