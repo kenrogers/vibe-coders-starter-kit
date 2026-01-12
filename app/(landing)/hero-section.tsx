@@ -1,9 +1,8 @@
 import React from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
-import Image from 'next/image'
 import { HeroHeader } from "./header"
-import { Sparkle } from 'lucide-react'
+import { ArrowRight, Terminal } from 'lucide-react'
 
 export default function HeroSection() {
     return (
@@ -14,39 +13,56 @@ export default function HeroSection() {
                     <div className="pt-8 pb-4 md:pt-12 md:pb-6">
                         <div className="relative z-10 mx-auto max-w-5xl pt-6 px-6 text-center">
                             <div>
-                                <h1 className="mx-auto mt-6 max-w-3xl text-balance text-4xl font-bold tracking-tight sm:text-5xl">Build Secure Applications with {process.env.NEXT_PUBLIC_SITE_NAME || 'Secure Vibe Coding'}</h1>
-                                <p className="text-muted-foreground mx-auto mt-4 mb-5 max-w-xl text-balance text-xl">Real-time security monitoring and threat detection built into your Next.js applications.</p>
+                                <div className="inline-flex items-center gap-2 rounded-full border border-border/50 bg-muted/50 px-4 py-1.5 text-sm text-muted-foreground mb-6">
+                                    <Terminal className="size-4" />
+                                    <span>Built for vibe coders who ship</span>
+                                </div>
+                                <h1 className="mx-auto mt-2 max-w-4xl text-balance text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+                                    Stop rebuilding foundations.{' '}
+                                    <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                                        Start shipping.
+                                    </span>
+                                </h1>
+                                <p className="text-muted-foreground mx-auto mt-6 mb-8 max-w-2xl text-balance text-lg md:text-xl">
+                                    The production-ready starter template that gives you auth, payments, real-time database, 
+                                    security, and a workflow system that actually helps you ship—not just prototype.
+                                </p>
 
-                                <div className="flex items-center justify-center gap-3 mb-4">
+                                <div className="flex items-center justify-center gap-3 mb-8">
                                     <Button
                                         asChild
-                                        size="lg">
-                                        <Link href="#link">
-                                            <span className="text-nowrap">Start Building</span>
+                                        size="lg"
+                                        className="gap-2">
+                                        <Link href="https://github.com/kenrogers/vibe-coders-starter-kit">
+                                            <span className="text-nowrap">Use This Template</span>
+                                            <ArrowRight className="size-4" />
                                         </Link>
                                     </Button>
                                     <Button
                                         asChild
                                         size="lg"
                                         variant="outline">
-                                        <Link href="#link">
-                                            <span className="text-nowrap">Watch Video</span>
+                                        <Link href="https://skool.com/vibecoders/about">
+                                            <span className="text-nowrap">Join the Community</span>
                                         </Link>
                                     </Button>
                                 </div>
-                            </div>
-                        </div>
-                        <div className="relative">
-                            <div className="relative z-10 mx-auto max-w-5xl px-6">
-                                <div className="">
-                                    <div className="bg-background rounded-(--radius) relative mx-auto overflow-hidden border border-transparent shadow-lg shadow-black/10 ring-1 ring-black/10">
-                                        <Image
-                                            src="/hero-section-main-app-dark.png"
-                                            alt="Secure Vibe Coding dashboard"
-                                            width={2856}
-                                            height={1798}
-                                            priority
-                                        />
+
+                                {/* Code snippet preview */}
+                                <div className="mx-auto max-w-md">
+                                    <div className="rounded-xl border bg-card p-4 text-left font-mono text-sm shadow-lg">
+                                        <div className="flex items-center gap-2 text-muted-foreground mb-3">
+                                            <div className="flex gap-1.5">
+                                                <div className="size-3 rounded-full bg-red-500/80" />
+                                                <div className="size-3 rounded-full bg-yellow-500/80" />
+                                                <div className="size-3 rounded-full bg-green-500/80" />
+                                            </div>
+                                            <span className="text-xs">terminal</span>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p><span className="text-muted-foreground">$</span> <span className="text-primary">/work</span></p>
+                                            <p className="text-muted-foreground text-xs">→ Loads context, checks lessons, guides execution</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

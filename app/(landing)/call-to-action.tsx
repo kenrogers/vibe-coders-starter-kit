@@ -1,38 +1,59 @@
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import PixelCard from '@/components/react-bits/pixel-card'
+import { ArrowRight, Github } from 'lucide-react'
 
 export default function CallToAction() {
     return (
-        <section className="py-1 px-6">
-            <div className=" mx-auto max-w-5xl rounded-3xl px-6 py-1 md:py-2 lg:py-3">
-                <PixelCard variant="blue" className="w-full max-w-5xl h-auto aspect-[16/9]">
-                <div className="absolute text-center">
-                    <h2 className="text-balance text-4xl font-semibold lg:text-5xl">Start Building</h2>
-                    <p className="mt-4">Libero sapiente aliquam quibusdam aspernatur.</p>
+        <section className="py-16 md:py-24">
+            <div className="mx-auto max-w-4xl px-6">
+                <div className="relative rounded-3xl border bg-gradient-to-b from-muted/50 to-muted/30 p-8 md:p-12 text-center overflow-hidden">
+                    {/* Background decoration */}
+                    <div className="absolute inset-0 bg-grid-pattern opacity-5" />
+                    
+                    <div className="relative">
+                        <h2 className="text-balance text-3xl md:text-4xl font-semibold">
+                            Stop rebuilding the same foundation over and over.
+                        </h2>
+                        <p className="mt-4 text-muted-foreground text-lg max-w-xl mx-auto">
+                            Auth, payments, real-time data, security, and a workflow system that actually helps you ship.
+                        </p>
 
-                    <div className="mt-12 flex flex-wrap justify-center gap-4">
-                        <Button
-                            asChild
-                            size="lg">
-                            <Link href="/">
-                                <span>Get Started</span>
-                            </Link>
-                        </Button>
+                        <div className="mt-8 flex flex-wrap justify-center gap-4">
+                            <Button
+                                asChild
+                                size="lg"
+                                className="gap-2">
+                                <Link href="https://github.com/kenrogers/vibe-coders-starter-kit">
+                                    <Github className="size-4" />
+                                    <span>Use This Template</span>
+                                    <ArrowRight className="size-4" />
+                                </Link>
+                            </Button>
 
-                        <Button
-                            asChild
-                            size="lg"
-                            variant="outline">
-                            <Link href="/">
-                                <span>Book Demo</span>
+                            <Button
+                                asChild
+                                size="lg"
+                                variant="outline">
+                                <Link href="https://skool.com/vibecoders/about">
+                                    <span>Join Vibe Coders</span>
+                                </Link>
+                            </Button>
+                        </div>
+
+                        <p className="mt-8 text-sm text-muted-foreground">
+                            Built with ❤️ by{' '}
+                            <Link href="https://kenrogers.co" className="underline hover:text-foreground transition-colors">
+                                Ken Rogers
                             </Link>
-                        </Button>
+                            {' '}for the{' '}
+                            <Link href="https://skool.com/vibecoders/about" className="underline hover:text-foreground transition-colors">
+                                Vibe Coders
+                            </Link>
+                            {' '}community
+                        </p>
                     </div>
                 </div>
-                </PixelCard>
             </div>
-            
         </section>
     )
 }
