@@ -1,11 +1,11 @@
 ---
 name: self-installer
-description: Automated installation and setup of THIS Secure Vibe Coding OS SaaS application. This skill installs the current application only. Use when user says "install app", "setup app", "install this app", "install from readme", or "run the installation". Automates Clerk authentication setup, Convex backend configuration, webhook setup, billing enablement, and application testing using Playwright browser automation.
+description: Guided installation and setup of THIS Secure Vibe Coding OS SaaS application. This skill installs the current application only. Use when user says "install app", "setup app", "install this app", "install from readme", or "run the installation". Guides user through Clerk authentication setup, Convex backend configuration, webhook setup, and billing enablement.
 ---
 
-# Self-Installer - Automated Application Installation
+# Self-Installer - Guided Application Installation
 
-This skill automates the complete installation of THIS application by following the README.md instructions exactly.
+This skill guides the user through the complete installation of THIS application by following the README.md instructions exactly.
 
 ## Installation Instructions Source
 
@@ -16,187 +16,215 @@ Do NOT duplicate steps here. Always read and follow the README.md file for the a
 ## Prerequisites
 
 Before starting:
-1. Check if Playwright MCP is configured in settings or add it:
-   - In VS Code: Add to `amp.mcpServers` in settings
-   - In CLI: Run `amp mcp add playwright npx '@playwright/mcp@latest' --args '--headless' '--isolated'`
-2. User must have or will create Clerk account
-3. User must have or will create Convex account
-
-### MCP Configuration for Amp
-
-Add to your VS Code settings.json or CLI config:
-```json
-"amp.mcpServers": {
-  "playwright": {
-    "command": "npx",
-    "args": ["-y", "@playwright/mcp@latest", "--headless", "--isolated"]
-  }
-}
-```
-
-## User Approvals Required
-
-During installation, the user will need to approve:
-- **File Operations**: Editing .env.local multiple times (Edit tool)
-- **Bash Commands**: npm install, cp, kill, node commands for secret generation
-- **Authentication**: Sign in to Clerk, Convex, and the application when prompted
-
-The skill will request these approvals as needed throughout the installation process.
+1. User must have or will create Clerk account
+2. User must have or will create Convex account
 
 ## Installation Workflow
 
-### Step 1: Ask User for Site Name
+### Step 1: Ask User for Site Name and Billing Preference
 
 Ask the user directly:
 - Question: "What would you like to name your site?"
 - Default option: Use current directory name (extract from `pwd`)
 - Example: If current directory is `/Users/name/code/test3`, suggest `test3`
 
-### Step 2: Follow README.md Installation Steps
+Then ask:
+- Question: "Will this project use Clerk Billing for subscriptions/payments? (yes/no)"
+- If **yes**: Billing setup will be included later
+- If **no**: Billing setup will be skipped and billing components will be temporarily disabled
 
-Read the `README.md` file and execute each step in the "Getting Started" section in order:
+### Step 2: Initial Setup
 
-1. **Installation** section (steps 1-7)
-   - Run npm install
-   - Copy .env.example to .env.local
-   - Generate CSRF secrets per README instructions
-   - Configure environment variables per README order
-   - Use the site name from Step 1 for `NEXT_PUBLIC_SITE_NAME`
+Run these commands for the user:
+1. Run `npm install`
+2. Run `cp .env.example .env.local`
+3. Generate CSRF secrets per README instructions
 
-2. **Clerk Configuration** (README section 3, steps b-c)
-   - Navigate to `https://dashboard.clerk.com` (Tab 0)
-   - **PROMPT USER**: "I've opened the Clerk dashboard. Please sign in to continue."
-   - Wait for user to respond before proceeding
-   - Create application with chosen site name
-   - Extract and save API keys
-   - Create JWT template for Convex
-   - Configure paths with localhost:3000
-   - **Keep this tab open** - don't close or navigate away
+Then prompt:
+```
+I've set up the initial files. Please open .env.local in your editor - we'll be adding values to it throughout this process.
 
-3. **Convex Configuration** (README section 3, step d)
-   - Create new tab: `mcp__playwright__browser_tabs` action: "new"
-   - Navigate to `https://dashboard.convex.dev` (Tab 1)
-   - **PROMPT USER**: "I've opened the Convex dashboard in a new tab. Please sign in to continue."
-   - Wait for user to respond before proceeding
-   - Create project (suggest using site name or directory name)
-   - Extract deployment credentials
-   - Configure environment variables as specified in README
-   - **Keep this tab open** - don't close or navigate away
+Set NEXT_PUBLIC_SITE_NAME to: {site-name-from-step-1}
+```
 
-4. **Webhook Setup** (README section 5)
-   - **Switch to Tab 0** (Clerk): Configure webhook endpoint
-     - Navigate to webhooks section in Clerk dashboard
-     - Handle iframe interactions for webhook form
-     - Extract webhook signing secret
-   - **Switch to Tab 1** (Convex): Add webhook secret
-     - Navigate to environment variables
-     - Add CLERK_WEBHOOK_SECRET
-   - Follow README webhook configuration steps exactly
+### Step 3: Clerk Configuration
 
-5. **Billing Setup** (README section 7)
-   - **Stay on Tab 0** (Clerk Dashboard)
-   - Navigate to Billing > Subscription plans
-   - Create subscription plan per README
-   - Navigate to Billing > Settings
-   - Enable billing per README
+Open the Clerk dashboard for the user:
+```bash
+open https://dashboard.clerk.com
+```
 
-6. **Deploy and Test** (README Development section)
-   - Run `npx convex dev --once` to deploy functions
-   - Restart the dev server (kill existing, start new)
-   - Test application with Playwright
+Then prompt:
+```
+I've opened the Clerk dashboard. Please:
 
-### Step 3: Comprehensive Testing with Playwright
+1. Sign in or create an account
+2. Create a new application named "{site-name}"
+3. Copy your API keys and add them to .env.local:
+   - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+   - CLERK_SECRET_KEY=sk_test_...
 
-After installation completes, thoroughly test the application:
+4. Go to JWT Templates and create a "convex" template
+5. Copy the Issuer URL and add it to .env.local:
+   - CLERK_JWT_ISSUER_DOMAIN=https://...
 
-**Test 1: Landing Page**
-1. Navigate to `http://localhost:3000`
-2. Take snapshot and verify:
-   - Hero section with site name displays
-   - Features section loads
-   - Pricing section with CustomClerkPricing component
-   - Testimonials section
-   - FAQ section
-   - Footer
+6. Go to Paths and set:
+   - Sign-in URL: http://localhost:3000/sign-in
+   - Sign-up URL: http://localhost:3000/sign-up
+   - After sign-in URL: http://localhost:3000/dashboard
+   - After sign-up URL: http://localhost:3000/dashboard
 
-**Test 2: Authentication Flow**
-1. Navigate to `http://localhost:3000/dashboard`
-2. Verify redirects to Clerk Account Portal sign-in
-3. **PROMPT USER**: "The app is redirecting to Clerk for authentication. Please sign in to test the dashboard functionality."
-4. Wait for user to respond "ok" or "done"
-5. Verify successful redirect back to dashboard
-6. Take snapshot and verify:
-   - User name and email display correctly
-   - Sidebar navigation is present
-   - Dashboard metrics and charts load
-   - Data tables populate
+Let me know when you've completed these steps.
+```
 
-**Test 3: Protected Route Access**
-1. Verify user is authenticated on dashboard
-2. Check user profile button shows correct name/email
-3. Test navigation between dashboard sections
-4. Verify all protected content loads without errors
+Wait for user to respond before proceeding.
 
-**Test 4: Payment-Gated Page (Before Subscription)**
-1. Click "Payment gated" button in sidebar
-2. Navigate to `/dashboard/payment-gated`
-3. Take snapshot and verify:
-   - "Upgrade to a paid plan" message displays
-   - Free plan shows as "Active"
-   - Pro plan shows with correct pricing ($9.99/month)
-   - "Subscribe" button is present
+### Step 4: Convex Configuration
 
-**Test 5: Subscription Flow**
-1. Click "Subscribe" button on Pro plan
-2. Verify Clerk Billing checkout modal opens
-3. Verify displays:
-   - "Checkout" heading
-   - Pro plan $9.99 per month
-   - Subtotal and Total Due Today
-   - "Pay with test card" button (development mode)
-4. Click "Pay with test card"
-5. Wait for payment processing
-6. Verify payment success modal appears with:
-   - "Payment was successful!" message
-   - Total paid: $9.99
-   - Payment method: Visa ⋯ 4242
-7. Click "Continue"
-8. Verify Pro plan now shows "Active" status
+Open the Convex dashboard for the user:
+```bash
+open https://dashboard.convex.dev
+```
 
-**Test 6: Webhook Verification**
-1. Navigate to Convex dashboard: `https://dashboard.convex.dev/t/{team}/{project}/{deployment}/data`
-2. Click on `paymentAttempts` table
-3. Take snapshot and verify payment record exists with:
-   - Status: "paid"
-   - Amount: 999 (cents)
-   - Payer email matches signed-in user
-   - Payment method: visa 4242
-   - Payment ID present
-4. Click on `users` table
-5. Verify user record exists with:
-   - Name matches Clerk user
-   - External ID matches Clerk user ID
-   - Synced via webhook
+Then prompt:
+```
+I've opened the Convex dashboard. Please:
 
-**Test 7: Post-Payment Access**
-1. Navigate back to `http://localhost:3000/dashboard/payment-gated`
-2. Refresh page
-3. Verify payment-gated content loads (if implemented)
-4. OR verify Pro plan still shows as "Active"
+1. Sign in or create an account
+2. Create a new project named "{site-name}"
+3. Go to Settings > Project Settings > Lost Access
+4. Copy the command shown there (it looks like):
+   npx convex dev --configure=existing --team your_team_name --project your_project_name
 
-**Test 8: Console and Error Check**
-1. Use `mcp__playwright__browser_console_messages` with `onlyErrors: true`
-2. Verify no critical errors in console
-3. Report any CSP warnings (expected for Clerk/Stripe)
-4. Confirm no 404s or 500s in network requests
+Let me know when you have the command copied.
+```
 
-### Step 4: Clean Up
+Wait for user to respond with the command, then run it for them.
 
-After all testing is complete:
-1. **Ask user** if they want to close the browser tabs
-2. Use AskUserQuestion: "Would you like me to close the browser tabs (Clerk and Convex dashboards)?"
-3. If user says yes: Close all browser tabs with `mcp__playwright__browser_close`
-4. If user says no: Leave tabs open for further manual exploration
+After running the configure command, prompt:
+```
+Convex is now configured. Your .env.local should have:
+- CONVEX_DEPLOYMENT=dev:...
+- NEXT_PUBLIC_CONVEX_URL=https://...convex.cloud
+
+Now in your Convex dashboard, go to Settings > Environment Variables and add:
+- CLERK_JWT_ISSUER_DOMAIN (same value as in .env.local)
+
+Let me know when you've completed this step.
+```
+
+Wait for user to respond before proceeding.
+
+### Step 5: Webhook Setup
+
+Prompt the user:
+```
+Now let's set up webhooks. In your Clerk dashboard:
+
+1. Go to Webhooks
+2. Create a new webhook endpoint:
+   - URL: {NEXT_PUBLIC_CONVEX_URL}/api/webhooks/clerk
+   - Events: Select all user events and session events
+
+3. Copy the Signing Secret
+
+4. In your Convex dashboard, go to Settings > Environment Variables
+5. Add: CLERK_WEBHOOK_SECRET={signing-secret}
+
+Let me know when you've completed these steps.
+```
+
+Wait for user to respond before proceeding.
+
+### Step 6: Billing Setup (Conditional)
+
+**If user said YES to billing in Step 1:**
+
+Prompt the user:
+```
+Now let's enable billing. In your Clerk dashboard:
+
+1. Go to Billing > Subscription plans
+2. Create a "Pro" plan at $9.99/month per README instructions
+
+3. Go to Billing > Settings
+4. Enable billing
+
+Let me know when you've completed these steps.
+```
+
+Wait for user to respond before proceeding.
+
+**If user said NO to billing in Step 1:**
+
+Inform the user:
+```
+Since you're not using billing, I'll disable the billing components temporarily.
+```
+
+Then disable billing in the project:
+
+1. **Update the payment-gated page** (`app/(app)/dashboard/payment-gated/page.tsx`):
+   - Replace the content with a simple placeholder message
+   - Example: "Payment features coming soon" or similar
+
+2. **Update the pricing section** (find the pricing component on the landing page):
+   - Replace or remove the `CustomClerkPricing` component
+   - Can use static pricing cards or remove the section entirely
+
+3. **Update sidebar navigation** (find the sidebar/nav component):
+   - Remove or hide the "Payment gated" link
+
+After making changes, inform the user:
+```
+Billing components have been temporarily disabled. You can re-enable them later by:
+1. Setting up Clerk Billing in your dashboard
+2. Reverting the changes I made to the payment-gated page and pricing section
+3. Restoring the sidebar link
+
+The original files are in git history if you need to restore them.
+```
+
+### Step 7: Deploy and Test
+
+Run these commands:
+```bash
+npx convex dev --once
+```
+
+Then start the dev server:
+```bash
+npm run dev
+```
+
+**If user said YES to billing:**
+
+Prompt the user:
+```
+The application should now be running at http://localhost:3000
+
+Please test:
+1. Visit the landing page
+2. Sign in via /dashboard
+3. Check the payment-gated page
+4. Try the subscription flow with the test card
+
+Let me know if everything is working!
+```
+
+**If user said NO to billing:**
+
+Prompt the user:
+```
+The application should now be running at http://localhost:3000
+
+Please test:
+1. Visit the landing page
+2. Sign in via /dashboard
+3. Verify the dashboard loads correctly
+
+Let me know if everything is working!
+```
 
 ## Critical Rules
 
@@ -210,58 +238,19 @@ After all testing is complete:
 
 ### Environment Variables
 
-Only set variables that appear in README.md `.env.local` configuration section.
+Only reference variables that appear in README.md `.env.local` configuration section.
 
-**DO NOT** add:
+**DO NOT** reference:
 - `NEXT_PUBLIC_CLERK_SIGN_IN_URL`
 - `NEXT_PUBLIC_CLERK_SIGN_UP_URL`
 - Any other variables not in README
 
-### Playwright Usage
+### User-Driven Approach
 
-- Use Playwright MCP for all browser automation
-- Use snapshots to get element refs before clicking
-- Handle iframes for Clerk webhook configuration
-- **Use separate tabs** for Clerk and Convex dashboards:
-  - Tab 0: Clerk Dashboard (https://dashboard.clerk.com)
-  - Tab 1: Convex Dashboard (https://dashboard.convex.dev)
-  - Use `mcp__playwright__browser_tabs` with `action: "new"` to create tabs
-  - Use `mcp__playwright__browser_tabs` with `action: "select"` and `index: N` to switch between tabs
-  - Keep both tabs open throughout installation to avoid repeated navigation
-- Close browser when done
-
-### User Authentication Prompts
-
-**CRITICAL**: When reaching authentication pages, explicitly prompt the user:
-
-**For Clerk Dashboard Sign-In:**
-```
-I've opened the Clerk dashboard. Please sign in to continue.
-I'll wait for you to complete the sign-in process.
-```
-Then wait for user to respond "ok" or "done" before continuing.
-
-**For Convex Dashboard Sign-In:**
-```
-I've opened the Convex dashboard. Please sign in to continue.
-I'll wait for you to complete the sign-in process.
-```
-Then wait for user to respond "ok" or "done" before continuing.
-
-**For App Testing Sign-In:**
-```
-The app is redirecting to Clerk for authentication.
-Please sign in to test the dashboard functionality.
-I'll wait for you to complete the sign-in.
-```
-Then wait for user to respond "ok" or "done" before continuing.
-
-**For Subscription Testing:**
-```
-I'll now test the subscription flow by clicking Subscribe.
-The payment modal will open with a test payment option.
-```
-No wait needed - continue automatically with "Pay with test card".
+- Open URLs for the user using `open <url>` command
+- Prompt the user with clear instructions for what to configure
+- Wait for user confirmation before proceeding to next step
+- User manually updates .env.local with values they copy from dashboards
 
 ## Error Handling
 
@@ -273,14 +262,12 @@ If any step fails:
 
 ## Success Output
 
-When complete, show:
+**If user said YES to billing:**
 
 ```
 🎉 Installation Complete!
 
 Site Name: {user-chosen-name}
-Clerk Application: {name}
-Convex Project: {name} ({deployment-name})
 Development URL: http://localhost:3000
 
 Configuration Summary:
@@ -293,17 +280,6 @@ Configuration Summary:
 ✅ Webhooks configured (Clerk → Convex)
 ✅ Billing enabled with Pro plan ($9.99/month)
 
-Test Results:
-✅ Landing page loads successfully
-✅ Authentication flow works (Clerk Account Portal)
-✅ Dashboard accessible with user data
-✅ Protected routes enforce authentication
-✅ Payment-gated page shows subscription options
-✅ Subscription flow completes successfully
-✅ Payment recorded in Convex database
-✅ User synced to Convex via webhook
-✅ No critical console errors
-
 Next Steps:
 - Application is running at http://localhost:3000
 - Convex functions are deployed
@@ -312,10 +288,36 @@ Next Steps:
 - See README.md for deployment to production
 ```
 
+**If user said NO to billing:**
+
+```
+🎉 Installation Complete!
+
+Site Name: {user-chosen-name}
+Development URL: http://localhost:3000
+
+Configuration Summary:
+✅ Dependencies installed (npm packages)
+✅ Environment variables configured (.env.local)
+✅ CSRF secrets generated
+✅ Clerk authentication set up
+✅ JWT template configured for Convex
+✅ Convex backend deployed
+✅ Webhooks configured (Clerk → Convex)
+⏸️ Billing disabled (components temporarily removed)
+
+Next Steps:
+- Application is running at http://localhost:3000
+- Convex functions are deployed
+- You can now develop and customize
+- To enable billing later, set up Clerk Billing and restore the billing components
+- See README.md for deployment to production
+```
+
 ## Maintainability
 
 This skill is designed to be **maintenance-free**:
 - All actual installation steps are in README.md
-- Skill only orchestrates the workflow and automation
-- When README updates, skill automatically uses new instructions
+- Skill only orchestrates the workflow and guides the user
+- When README updates, skill automatically follows new instructions
 - No need to update this skill when installation process changes
