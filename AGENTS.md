@@ -46,6 +46,53 @@ Security is implemented through specialized skills at `.agents/skills/security/`
 - **security-awareness/business-logic-flaws**: Race conditions, integer overflow
 - **security-awareness/resource-exhaustion**: Unbounded operations, DoS, cost explosion
 
+## Project Management (GSD)
+
+Project planning and execution uses the **Get Shit Done (GSD)** system with slash commands.
+
+### Commands
+
+| Command | Purpose |
+|---------|---------|
+| `/gsd` | Check status and route to next action |
+| `/new-project` | Initialize new project with deep questioning |
+| `/roadmap` | Create phases from requirements |
+| `/plan` | Create PLAN.md for next phase |
+| `/execute` | Run current plan with atomic commits |
+| `/progress` | Show status and next steps |
+
+### Workflow
+
+```
+/new-project → /roadmap → /plan → /execute → /progress
+```
+
+### Key Principles
+
+1. **Plans ARE Prompts**: Plans are directly executable, not transformed
+2. **Aggressive Atomicity**: 2-3 tasks per plan maximum
+3. **Context Window Awareness**: Quality degrades at 50%+ usage
+4. **Atomic Commits**: One commit per task
+5. **State Is Sacred**: STATE.md tracks all decisions and progress
+
+### Quick Start
+
+- **New project**: `/new-project`
+- **Resume work**: `/gsd` or `/progress`
+- **Plan next phase**: `/plan`
+
+### Configuration
+
+Stored in `.planning/config.json`:
+- **Mode**: `interactive` (asks questions) or `yolo` (minimal interruption)
+- **Depth**: `quick`, `standard`, or `comprehensive`
+
+### Supporting Skills
+
+Detailed templates and references at `.agents/skills/gsd/`:
+- `templates/` - PROJECT.md, ROADMAP.md, PLAN.md, STATE.md, SUMMARY.md
+- `references/` - principles.md, questioning.md, plan-format.md, git-integration.md
+
 ## Dynamic Lessons Library
 
 **IMPORTANT**: Before starting any new work, ALWAYS check `.agents/skills/lessons/` for relevant past learnings.
