@@ -421,11 +421,31 @@ export const POST = withRateLimit(withCsrf(handler));
 
 ## Deployment
 
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete deployment instructions including:
+### Preview Deployment (Start Here)
 
+When you're ready to test in a live environment:
+
+```
+deploy preview
+```
+
+This guided skill walks you through deploying to Vercel Preview + Convex dev:
+- ✅ Live URL you can share for feedback
+- ✅ Test payments with fake cards (4242 4242 4242 4242)
+- ✅ Auto-updates when you push to GitHub
+- ✅ No risk - can reset anytime
+
+### Production Deployment (When Ready)
+
+Only deploy to production when:
+- All features tested in preview
+- Payments verified with test cards
+- You have a custom domain
+- You're ready for real users and real money
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete instructions including:
 - Production Clerk and Convex setup
-- Vercel configuration
-- Webhook configuration for production
+- Custom domain configuration
 - Going live with real payments
 
 ---

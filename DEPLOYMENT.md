@@ -1,21 +1,77 @@
-# Deployment Guide: 3-Environment Setup
+# Deployment Guide: Development-First Strategy
 
-This guide covers deploying your application with a professional 3-environment strategy: **Development**, **Preview/Testing**, and **Production**.
+This guide covers deploying your application with a **development-first** approach. Always deploy to development/preview first, only go to production when you're ready for real users and real payments.
 
-**Last Updated:** October 15, 2025
-**For:** Secure Vibe Coding OS / More Secure Starter
+**Last Updated:** January 2026
+**For:** Vibe Coders Starter Kit
+
+---
+
+## Quick Start: Preview Deployment
+
+**Most users should start here.** Use the guided deployment skill:
+
+```
+deploy preview
+```
+
+This walks you through deploying to Vercel Preview + Convex dev for testing.
+
+**Only deploy to production when:**
+- ✅ All features tested in preview
+- ✅ Payments verified with test cards
+- ✅ You have a custom domain
+- ✅ You're ready for real users and real money
 
 ---
 
 ## Table of Contents
 
-1. [Architecture Overview](#architecture-overview)
-2. [Environment Details](#environment-details)
-3. [Configuration Options](#configuration-options)
-4. [Setup Guide](#setup-guide)
-5. [Workflow](#workflow)
-6. [Data Management](#data-management)
-7. [Troubleshooting](#troubleshooting)
+1. [Preview-First Philosophy](#preview-first-philosophy)
+2. [Architecture Overview](#architecture-overview)
+3. [Environment Details](#environment-details)
+4. [Configuration Options](#configuration-options)
+5. [Setup Guide](#setup-guide)
+6. [Workflow](#workflow)
+7. [Data Management](#data-management)
+8. [Troubleshooting](#troubleshooting)
+
+---
+
+## Preview-First Philosophy
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    START HERE: PREVIEW                       │
+│ ────────────────────────────────────────────────────────    │
+│ • Vercel Preview deployment                                  │
+│ • Convex dev deployment                                      │
+│ • Clerk test keys (pk_test_)                                 │
+│ • Clerk Billing test mode (fake cards only)                  │
+│ • Risk: LOW - can reset anytime                             │
+│                                                              │
+│ Command: deploy preview                                      │
+└─────────────────────────────────────────────────────────────┘
+                            ↓
+                   Test everything thoroughly
+                            ↓
+┌─────────────────────────────────────────────────────────────┐
+│                 ONLY WHEN READY: PRODUCTION                  │
+│ ────────────────────────────────────────────────────────    │
+│ • Custom domain required                                     │
+│ • Production Clerk instance (pk_live_)                       │
+│ • Convex prod deployment                                     │
+│ • Clerk Billing live mode (real money!)                      │
+│ • Risk: HIGH - affects real users and revenue                │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Why development first?**
+- Test all features in a live environment
+- Verify payments with test cards (no real money)
+- Share URLs with teammates for feedback
+- Find issues before they affect real users
+- Build confidence before going live
 
 ---
 
@@ -31,7 +87,7 @@ This guide covers deploying your application with a professional 3-environment s
 │ Running: npm run dev + npx convex dev                       │
 │ Clerk: pk_test_... (Development instance)                   │
 │ Convex: dev:your-deployment                                 │
-│ Stripe: Test mode                                           │
+│ Billing: Test mode (Clerk Billing)                          │
 │ Purpose: Experiments, breaking changes, new features        │
 └─────────────────────────────────────────────────────────────┘
                             ↓
@@ -44,7 +100,7 @@ This guide covers deploying your application with a professional 3-environment s
 │ URL: https://your-app-git-test.vercel.app                   │
 │ Clerk: pk_test_... OR separate staging instance            │
 │ Convex: dev:deployment OR separate staging project          │
-│ Stripe: Test mode                                           │
+│ Billing: Test mode (Clerk Billing)                          │
 │ Purpose: QA, user testing, pre-production validation        │
 └─────────────────────────────────────────────────────────────┘
                             ↓
@@ -57,7 +113,7 @@ This guide covers deploying your application with a professional 3-environment s
 │ URL: https://your-app.vercel.app                            │
 │ Clerk: pk_live_... (Production instance)                    │
 │ Convex: prod:your-deployment                                │
-│ Stripe: Live mode (real payments)                           │
+│ Billing: Live mode (Clerk Billing - real payments)          │
 │ Purpose: Real users, real data, real revenue                │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -107,7 +163,7 @@ npx convex dev       # Convex dev deployment
 - Running on: `http://localhost:3000`
 - Database: Personal dev database
 - Users: Test accounts only
-- Payments: Stripe test cards only
+- Payments: Test cards only (via Clerk Billing)
 - Risk level: ZERO (isolated environment)
 
 **Use for:**
@@ -180,7 +236,7 @@ CONVEX_DEPLOY_KEY=prod:staging-project|xxx
 - Running on: `https://your-app-git-test.vercel.app`
 - Database: Staging database (optional clone of prod)
 - Users: Test accounts OR cloned prod data
-- Payments: Stripe test mode
+- Payments: Test mode (Clerk Billing)
 - Risk level: LOW (can reset if needed)
 
 **Use for:**
@@ -211,7 +267,7 @@ SESSION_SECRET=<production-secret>
 - Running on: `https://your-app.vercel.app`
 - Database: Production database (backed up regularly)
 - Users: Real users
-- Payments: Real money (Stripe live mode)
+- Payments: Real money (Clerk Billing live mode)
 - Risk level: HIGH (affects revenue and users)
 
 **Use for:**
@@ -431,7 +487,7 @@ git push origin main
 - Vercel auto-deploys to Production URL
 - Production uses prod instances (pk_live_, prod:deployment)
 - Real users see changes
-- Stripe processes real payments
+- Clerk Billing processes real payments
 
 ### Emergency Hotfix Workflow
 
@@ -643,7 +699,7 @@ You already have this from initial setup.
 3. **Configure:** Same settings as dev instance
 4. **Get keys:** Save pk_test_staging and sk_test_staging
 5. **OAuth:** Can use Clerk's shared credentials (it's still development)
-6. **Billing:** Connect Stripe in test mode (or skip if not testing payments)
+6. **Billing:** Enable Clerk Billing in test mode (or skip if not testing payments)
 
 #### Create Production Instance
 
@@ -813,7 +869,7 @@ git push origin main
 ✅ **DO:**
 - Use dev branch for all development
 - Run `npx convex dev` locally
-- Test with Stripe test cards
+- Test with Clerk Billing test cards (4242 4242 4242 4242)
 - Break things freely
 
 ❌ **DON'T:**
@@ -839,7 +895,7 @@ git push origin main
 ✅ **DO:**
 - Monitor after every deployment
 - Keep database backups
-- Use Stripe test mode first, then switch to live
+- Use Clerk Billing test mode first, then switch to live
 - Have rollback plan ready
 - Test yourself before announcing to users
 
@@ -873,7 +929,7 @@ git push origin main
 - Billing events
 - Webhook delivery
 
-**Stripe:**
+**Clerk Billing:**
 - Payment success/failure rates
 - Revenue tracking
 - Subscription churn
@@ -931,9 +987,9 @@ git push origin test
 **Problem: Users can't subscribe in production**
 
 **Solution:**
-1. Verify Stripe is connected in Clerk production instance
-2. Check CSP allows Stripe domains (middleware.ts)
-3. Verify Stripe mode (test vs live)
+1. Verify Clerk Billing is enabled in production instance
+2. Check CSP allows Clerk domains (middleware.ts)
+3. Verify Clerk is in production mode (pk_live_ keys)
 4. Check browser console for CSP errors
 
 ### Database Issues
@@ -962,7 +1018,7 @@ git push origin test
 | **URL** | localhost:3000 | git-test.vercel.app | your-app.vercel.app |
 | **Clerk Keys** | pk_test_ | pk_test_ (or staging) | pk_live_ |
 | **Convex** | dev:deployment | dev: OR staging: | prod:deployment |
-| **Stripe Mode** | Test | Test | Live (after validation) |
+| **Billing Mode** | Test | Test | Live (after validation) |
 | **Users** | Test accounts | Test accounts | Real users |
 | **Payments** | Fake | Fake | Real money |
 | **Risk** | ZERO | LOW | HIGH |
