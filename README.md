@@ -14,7 +14,7 @@ A production-ready starter template that gives you everything you need to vibe c
 
 Take the 7 Day Vibe Coding Challenge to learn how to use this template to build anything you want, no coding experience required.
 
-[![Join Free on Skool](https://img.shields.io/badge/Join%20Free-Vibe%20Coders%20Community-7c3aed?style=for-the-badge&logo=discord&logoColor=white)](https://www.skool.com/vibecoders/about)
+[Join Free on Skool](https://www.skool.com/vibecoders/about)
 
 </div>
 
@@ -153,15 +153,15 @@ All state is stored in `.planning/` and lessons in `.agents/skills/lessons/`.
 
 ### All Commands
 
-| Command        | What It Does                             |
-| -------------- | ---------------------------------------- |
+| Command        | What It Does                                |
+| -------------- | ------------------------------------------- |
 | `/work`        | **Unified workflow with TDD (recommended)** |
-| `/gsd`         | Check status, route to next action       |
-| `/new-project` | Initialize project with deep questioning |
-| `/roadmap`     | Break project into phases                |
-| `/plan`        | Create PLAN.md (2-3 atomic tasks)        |
-| `/execute`     | Run plan with TDD + atomic commits       |
-| `/progress`    | Show status and next steps               |
+| `/gsd`         | Check status, route to next action          |
+| `/new-project` | Initialize project with deep questioning    |
+| `/roadmap`     | Break project into phases                   |
+| `/plan`        | Create PLAN.md (2-3 atomic tasks)           |
+| `/execute`     | Run plan with TDD + atomic commits          |
+| `/progress`    | Show status and next steps                  |
 
 ---
 
@@ -430,6 +430,7 @@ deploy preview
 ```
 
 This guided skill walks you through deploying to Vercel Preview + Convex dev:
+
 - ✅ Live URL you can share for feedback
 - ✅ Test payments with fake cards (4242 4242 4242 4242)
 - ✅ Auto-updates when you push to GitHub
@@ -438,12 +439,14 @@ This guided skill walks you through deploying to Vercel Preview + Convex dev:
 ### Production Deployment (When Ready)
 
 Only deploy to production when:
+
 - All features tested in preview
 - Payments verified with test cards
 - You have a custom domain
 - You're ready for real users and real money
 
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete instructions including:
+
 - Production Clerk and Convex setup
 - Custom domain configuration
 - Going live with real payments
