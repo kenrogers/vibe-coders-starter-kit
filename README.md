@@ -42,6 +42,7 @@ Most vibe coding produces throwaway prototypes. This template is designed to pro
 
 | Practice                | How It's Built In                                            |
 | ----------------------- | ------------------------------------------------------------ |
+| **Test-driven dev**     | TDD (Red-Green-Refactor) is the default for all features     |
 | **Consistent workflow** | The `/work` command guides every session                     |
 | **Compound learning**   | Lessons accumulate and apply automatically                   |
 | **Security by default** | Pre-built patterns for auth, CSRF, rate limiting, validation |
@@ -112,26 +113,40 @@ Instead of writing prompts from scratch each session, you use a single command t
 │                        /work                                │
 ├─────────────────────────────────────────────────────────────┤
 │  1. LEARN   - Check past lessons for what worked/failed     │
-│  2. DO      - Plan and execute with atomic commits          │
+│  2. DO      - Execute with TDD (Red-Green-Refactor)         │
 │  3. CAPTURE - Save learnings for next time                  │
 └─────────────────────────────────────────────────────────────┘
 ```
+
+### TDD Is Default
+
+All feature work follows the Red-Green-Refactor cycle:
+
+```
+For each feature:
+  🔴 RED      → Write failing test first
+  🟢 GREEN    → Minimal code to pass
+  🔵 REFACTOR → Clean up (tests must still pass)
+  ✓ COMMIT   → Test + implementation together
+```
+
+This prevents the AI from "cheating" by designing tests around implementations it's already planning. The test writer doesn't know how the code will be implemented—ensuring tests describe real behavior.
 
 ### Why This Matters
 
 | Problem                           | How `/work` Fixes It                                         |
 | --------------------------------- | ------------------------------------------------------------ |
+| **No tests**                      | TDD is built-in—every feature gets tests automatically       |
 | **Repeating mistakes**            | Automatically surfaces past learnings before you start       |
 | **Lost context between sessions** | Reads project state and picks up where you left off          |
 | **Forgotten lessons**             | Prompts you to capture learnings when work completes         |
 | **Vague AI prompts**              | Plans are structured, executable, and atomic (2-3 tasks max) |
-| **Inconsistent workflow**         | Enforces the same proven loop every session                  |
 
 ### How It Works
 
 1. **Projects** break into **phases** (auth, database, UI, etc.)
 2. **Phases** break into **plans** with 2-3 atomic tasks each
-3. **Tasks** execute one at a time with verification and commits
+3. **Tasks** execute with TDD cycle (Red → Green → Refactor → Commit)
 4. **Learnings** get captured and applied to future sessions
 
 All state is stored in `.planning/` and lessons in `.agents/skills/lessons/`.
@@ -140,12 +155,12 @@ All state is stored in `.planning/` and lessons in `.agents/skills/lessons/`.
 
 | Command        | What It Does                             |
 | -------------- | ---------------------------------------- |
-| `/work`        | **Unified workflow (recommended)**       |
+| `/work`        | **Unified workflow with TDD (recommended)** |
 | `/gsd`         | Check status, route to next action       |
 | `/new-project` | Initialize project with deep questioning |
 | `/roadmap`     | Break project into phases                |
 | `/plan`        | Create PLAN.md (2-3 atomic tasks)        |
-| `/execute`     | Run plan with atomic commits             |
+| `/execute`     | Run plan with TDD + atomic commits       |
 | `/progress`    | Show status and next steps               |
 
 ---
@@ -160,6 +175,7 @@ Skills are specialized instructions that activate when you need them. They encod
 .agents/skills/
 ├── security/           # CSRF, rate limiting, validation, auth patterns
 ├── gsd/                # Project management and planning system
+├── tdd/                # Test-Driven Development patterns and setup
 ├── frontend-design/    # UI patterns that avoid generic AI aesthetics
 └── lessons/            # YOUR learnings (grows over time)
 ```
@@ -239,6 +255,7 @@ Next time you work on something similar, `/work` finds and applies those lessons
 
 - ⚡️ Turbopack for fast HMR
 - 📝 TypeScript throughout
+- 🧪 TDD workflow with Vitest + Testing Library
 - 🧩 shadcn/ui component library
 - 📝 SEO + LLM-optimized blog engine
 
@@ -424,6 +441,7 @@ See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete deployment instructions includ
 │   └── skills/
 │       ├── security/       # Security implementation patterns
 │       ├── gsd/            # Project management system
+│       ├── tdd/            # TDD patterns and Vitest setup
 │       ├── frontend-design/# UI patterns
 │       └── lessons/        # Your accumulated learnings
 └── .planning/              # Project state (gitignored plans)

@@ -19,6 +19,11 @@ npm run lint
 
 # Build
 npm run build
+
+# Testing (after Vitest setup)
+npm test              # Watch mode
+npm run test:run      # Single run
+npm run test:coverage # With coverage
 ```
 
 ## Security Architecture
@@ -78,13 +83,15 @@ That's it. Just say `/work` and the system handles the rest.
 
 | Command | Purpose |
 |---------|---------|
-| `/work` | **Unified workflow (recommended)** |
+| `/work` | **Unified workflow with TDD (recommended)** |
 | `/gsd` | Check status and route to next action |
 | `/new-project` | Initialize new project with deep questioning |
 | `/roadmap` | Create phases from requirements |
 | `/plan` | Create PLAN.md for next phase |
-| `/execute` | Run current plan with atomic commits |
+| `/execute` | Run current plan with TDD + atomic commits |
 | `/progress` | Show status and next steps |
+
+**Note:** All feature work uses TDD (Red-Green-Refactor) by default. See `.agents/skills/tdd/SKILL.md` for test patterns.
 
 ### Key Principles
 

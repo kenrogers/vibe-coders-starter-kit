@@ -1,7 +1,7 @@
 # GSD: Work Session
 
 **name**: gsd/work
-**description**: Unified workflow loop that combines lessons, Oracle planning, Librarian research, and GSD into a single command. Use at the start of any work session. Automatically checks for relevant learnings, leverages Oracle for planning/debugging and Librarian for research, routes to the right GSD action, and prompts for retrospective when work completes. Triggers include "work", "start working", "let's work", "begin session", "work session".
+**description**: Unified workflow loop that combines lessons, Oracle planning, Librarian research, and TDD into a single command. All feature work uses TDD (Red-Green-Refactor) by default. Automatically checks for relevant learnings, leverages Oracle for planning/debugging, routes to GSD actions, and prompts for retrospective when work completes. Triggers include "work", "start working", "let's work", "begin session", "work session".
 
 ---
 
@@ -10,8 +10,10 @@
 Single entry point for the complete developer workflow. Eliminates the need to remember multiple commands by wrapping everything into one intelligent loop:
 
 ```
-/work = /advise → Oracle Review → /gsd (with Librarian research) → Oracle Retrospective
+/work = /advise → Oracle Review → TDD Execution → Oracle Retrospective
 ```
+
+**All feature work uses TDD by default.** Every implementation follows the Red-Green-Refactor cycle.
 
 ## The Work Loop
 
@@ -34,11 +36,14 @@ Single entry point for the complete developer workflow. Eliminates the need to r
 ║  └────────────────────────┬────────────────────────────────┘ ║
 ║                           ▼                                  ║
 ║  ┌─────────────────────────────────────────────────────────┐ ║
-║  │  3. DO THE WORK (GSD Loop)                              │ ║
-║  │     progress → plan → execute → progress                │ ║
-║  │     🔮 Oracle: Debug failures, review complex changes   │ ║
-║  │     📚 Librarian: Research APIs, find implementations   │ ║
-║  │     Repeat until phase/session complete                 │ ║
+║  │  3. DO THE WORK (TDD Loop)                              │ ║
+║  │     For each feature:                                   │ ║
+║  │     🔴 RED: Write failing test first                    │ ║
+║  │     🟢 GREEN: Minimal code to pass                      │ ║
+║  │     🔵 REFACTOR: Clean up, tests must pass              │ ║
+║  │     ✓ COMMIT: Test + implementation together            │ ║
+║  │     🔮 Oracle: Debug failures, review changes           │ ║
+║  │     📚 Librarian: Research APIs, find patterns          │ ║
 ║  └────────────────────────┬────────────────────────────────┘ ║
 ║                           ▼                                  ║
 ║  ┌─────────────────────────────────────────────────────────┐ ║
@@ -202,7 +207,7 @@ Before executing any plan, have Oracle review it for quality:
 ╚══════════════════════════════════════════════════════════════╝
 ```
 
-### Phase 3: Do The Work (GSD)
+### Phase 3: Do The Work (TDD Execution)
 
 Route to appropriate GSD action based on project state:
 
@@ -211,38 +216,122 @@ Check Project State
 ├─ No .planning/ → Load gsd/new-project
 ├─ No ROADMAP.md → Load gsd/create-roadmap  
 ├─ No PLAN.md for current phase → Load gsd/plan-phase
-├─ Has PLAN.md, not complete → Load gsd/execute-plan
+├─ Has PLAN.md, not complete → Execute with TDD
 └─ All phases complete → Phase 4 (retrospective)
 ```
 
-#### Execution-Time Tool Triggers
+#### TDD Execution Flow (Default for All Features)
 
-During execution, automatically invoke Oracle or Librarian when:
+**Every feature follows Red-Green-Refactor.** This is non-negotiable.
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  TDD EXECUTION PER TASK                                      ║
+╠══════════════════════════════════════════════════════════════╣
+║                                                              ║
+║  🔴 RED PHASE                                                ║
+║  ┌─────────────────────────────────────────────────────────┐ ║
+║  │  1. Write test describing expected behavior             │ ║
+║  │  2. DO NOT think about implementation yet               │ ║
+║  │  3. Run test → Confirm it FAILS                         │ ║
+║  │  4. Document: "Test fails because [X] doesn't exist"    │ ║
+║  └────────────────────────┬────────────────────────────────┘ ║
+║                           ▼                                  ║
+║  🟢 GREEN PHASE                                              ║
+║  ┌─────────────────────────────────────────────────────────┐ ║
+║  │  1. Write MINIMAL code to make test pass                │ ║
+║  │  2. No optimization, no extras                          │ ║
+║  │  3. "Fake it till you make it" is valid                 │ ║
+║  │  4. Run test → Confirm it PASSES                        │ ║
+║  └────────────────────────┬────────────────────────────────┘ ║
+║                           ▼                                  ║
+║  🔵 REFACTOR PHASE                                           ║
+║  ┌─────────────────────────────────────────────────────────┐ ║
+║  │  1. Evaluate: Does code need cleanup?                   │ ║
+║  │  2. If yes: Extract utilities, improve naming           │ ║
+║  │  3. If no: Skip (valid decision)                        │ ║
+║  │  4. Run test → Confirm still PASSES                     │ ║
+║  └────────────────────────┬────────────────────────────────┘ ║
+║                           ▼                                  ║
+║  ✓ COMMIT                                                    ║
+║  ┌─────────────────────────────────────────────────────────┐ ║
+║  │  git add -A                                             │ ║
+║  │  git commit -m "feat: [feature] with tests"             │ ║
+║  └─────────────────────────────────────────────────────────┘ ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+```
+
+**Output During TDD:**
+
+```
+╔══════════════════════════════════════════════════════════════╗
+║  🔴 RED: Writing test for user profile display               ║
+╠══════════════════════════════════════════════════════════════╣
+║  Test: should display user name and email                    ║
+║  File: app/profile/page.test.tsx                             ║
+║  Running... ❌ FAIL (expected)                               ║
+║  Error: Cannot find element with text "John Doe"             ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║  🟢 GREEN: Implementing minimal solution                     ║
+╠══════════════════════════════════════════════════════════════╣
+║  Created: app/profile/page.tsx                               ║
+║  Running tests... ✓ PASS                                     ║
+╚══════════════════════════════════════════════════════════════╝
+
+╔══════════════════════════════════════════════════════════════╗
+║  🔵 REFACTOR: Evaluating code quality                        ║
+╠══════════════════════════════════════════════════════════════╣
+║  Improvements:                                               ║
+║  • Integrated Clerk useUser() hook                           ║
+║  • Added loading skeleton                                    ║
+║  Running tests... ✓ PASS                                     ║
+╚══════════════════════════════════════════════════════════════╝
+
+✓ Committed: "feat: add user profile page with tests"
+```
+
+#### Oracle & Librarian During TDD
 
 ```
 ORACLE TRIGGERS:
-├─ Test fails 2+ times → "Consulting Oracle to debug this failure..."
-├─ TypeScript errors persist → "Asking Oracle to analyze these type errors..."
-├─ Complex multi-file change → "Having Oracle review this architecture..."
-└─ Stuck on implementation → "Let me consult the Oracle for guidance..."
+├─ Test fails after GREEN phase → "Consulting Oracle to debug..."
+├─ TypeScript errors persist → "Asking Oracle to analyze..."
+├─ Unclear how to test something → "Oracle: how should I test this?"
+└─ Stuck on implementation → "Let me consult the Oracle..."
 
 LIBRARIAN TRIGGERS:
-├─ Using new npm package → "Asking Librarian how [package] works..."
-├─ Implementing unfamiliar pattern → "Researching how [project] does this..."
-├─ API integration → "Having Librarian find examples of [API] usage..."
-└─ Best practice question → "Checking how established projects handle this..."
+├─ New testing pattern needed → "How does [library] test this?"
+├─ Unfamiliar API to test → "Researching test patterns for [API]..."
+└─ Best practice question → "How do established projects test this?"
 ```
 
-#### CRITICAL: Atomic Commits
+#### Test-First Principles
 
-**Every task MUST end with a git commit.** This is non-negotiable.
+| Principle | Why |
+|-----------|-----|
+| **Test behavior, not implementation** | Tests survive refactoring |
+| **See test fail first** | Proves test actually tests something |
+| **Minimal GREEN code** | Avoids over-engineering |
+| **Refactor is optional** | Sometimes code is already clean |
+| **Test + impl in one commit** | Atomic, reviewable units |
+
+See `.agents/skills/tdd/SKILL.md` for full TDD documentation and test patterns.
+
+#### Atomic Commits
+
+**Every TDD cycle ends with a git commit.** This is non-negotiable.
 
 ```
-Task Flow:
+TDD Task Flow:
 ┌─────────────────────────────────────────────────────────┐
-│  1. Execute task action steps                           │
-│  2. Run verification (typecheck, tests, etc.)           │
-│  3. git add -A                                          │
+│  1. 🔴 Write failing test                               │
+│  2. 🟢 Write minimal implementation                     │
+│  3. 🔵 Refactor if needed                               │
+│  4. Run all tests + typecheck                           │
+│  5. git add -A                                          │
 │  4. git commit -m "[message from <done> section]"       │
 │  5. Update STATE.md with commit count                   │
 │  6. Move to next task                                   │
