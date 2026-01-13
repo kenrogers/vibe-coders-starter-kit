@@ -86,8 +86,21 @@ That's it. Just say `/work` and the system handles the rest.
 1. **Plans ARE Prompts**: Plans are directly executable, not transformed
 2. **Aggressive Atomicity**: 2-3 tasks per plan maximum
 3. **Context Window Awareness**: Quality degrades at 50%+ usage
-4. **Atomic Commits**: One commit per task
+4. **Atomic Commits**: One commit per task (MANDATORY - see below)
 5. **State Is Sacred**: STATE.md tracks all decisions and progress
+
+### Atomic Commits (Non-Negotiable)
+
+**Every task MUST end with a git commit before moving to the next task.**
+
+```
+Task → Execute → Verify → git add -A → git commit → Next Task
+```
+
+- Commit message comes from the task's `<done>` section
+- Use conventional commit format: `feat:`, `fix:`, `refactor:`, `test:`, `docs:`, `chore:`
+- Never batch multiple tasks into one commit
+- Never skip commits between tasks
 
 ### Configuration
 

@@ -100,6 +100,36 @@ Check Project State
 └─ All phases complete → Phase 3 (retrospective)
 ```
 
+#### CRITICAL: Atomic Commits
+
+**Every task MUST end with a git commit.** This is non-negotiable.
+
+```
+Task Flow:
+┌─────────────────────────────────────────────────────────┐
+│  1. Execute task action steps                           │
+│  2. Run verification (typecheck, tests, etc.)           │
+│  3. git add -A                                          │
+│  4. git commit -m "[message from <done> section]"       │
+│  5. Update STATE.md with commit count                   │
+│  6. Move to next task                                   │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Never:**
+- Skip commits between tasks
+- Batch multiple tasks into one commit
+- Commit unverified code
+- Move to next task without committing
+
+**Commit Message Format:**
+```
+type: description
+
+Types: feat, fix, refactor, test, docs, chore
+Example: feat: add user authentication with Clerk
+```
+
 **Display combined dashboard:**
 
 ```
@@ -317,7 +347,23 @@ Agent: 🔧 Starting work session...
 
 User: continue
 
-Agent: [Executes plan with atomic commits...]
+Agent: Executing Task 1: Add core feature component...
+       ✓ Component created
+       ✓ Verification passed (npm run typecheck)
+       ✓ Committed: abc1234 "feat: add core feature component"
+       
+       Executing Task 2: Implement data layer...
+       ✓ Schema updated
+       ✓ Verification passed (npm run typecheck)
+       ✓ Committed: def5678 "feat: implement feature data layer"
+       
+       Executing Task 3: Add UI integration...
+       ✓ Pages connected
+       ✓ Verification passed (npm run typecheck)
+       ✓ Committed: ghi9012 "feat: integrate feature UI"
+       
+       Creating SUMMARY.md...
+       ✓ Committed: jkl3456 "docs: complete phase 02 plan"
        
        ✅ Phase 02 Complete!
        
