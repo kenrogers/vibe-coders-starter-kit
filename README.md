@@ -94,7 +94,7 @@ The system will guide you from there.
 
 ### Automated Setup (Amp/Claude Users)
 
-If you're using Amp or Claude with [Playwright MCP](https://github.com/anthropics/anthropic-cookbook/tree/main/misc/mcp_playwright), you can automate the entire installation:
+If you're using Amp or Claude with [agent-browser](https://github.com/vercel-labs/agent-browser), you can automate the entire installation:
 
 ```
 install app
@@ -114,7 +114,8 @@ Instead of writing prompts from scratch each session, you use a single command t
 ├─────────────────────────────────────────────────────────────┤
 │  1. LEARN   - Check past lessons for what worked/failed     │
 │  2. DO      - Execute with TDD (Red-Green-Refactor)         │
-│  3. CAPTURE - Save learnings for next time                  │
+│  3. VERIFY  - Browser test UI changes with agent-browser    │
+│  4. CAPTURE - Save learnings for next time                  │
 └─────────────────────────────────────────────────────────────┘
 ```
 

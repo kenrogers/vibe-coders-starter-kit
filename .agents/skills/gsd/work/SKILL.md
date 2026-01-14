@@ -41,13 +41,20 @@ Single entry point for the complete developer workflow. Eliminates the need to r
 ║  │     🔴 RED: Write failing test first                    │ ║
 ║  │     🟢 GREEN: Minimal code to pass                      │ ║
 ║  │     🔵 REFACTOR: Clean up, tests must pass              │ ║
+║  │     🌐 BROWSER: Test UI in browser (if UI relevant)     │ ║
 ║  │     ✓ COMMIT: Test + implementation together            │ ║
 ║  │     🔮 Oracle: Debug failures, review changes           │ ║
 ║  │     📚 Librarian: Research APIs, find patterns          │ ║
 ║  └────────────────────────┬────────────────────────────────┘ ║
 ║                           ▼                                  ║
 ║  ┌─────────────────────────────────────────────────────────┐ ║
-║  │  4. CAPTURE LEARNINGS                                   │ ║
+║  │  4. VERIFY UI (if applicable)                           │ ║
+║  │     🌐 agent-browser: Open page, snapshot, verify       │ ║
+║  │     Only commit after browser test passes               │ ║
+║  └────────────────────────┬────────────────────────────────┘ ║
+║                           ▼                                  ║
+║  ┌─────────────────────────────────────────────────────────┐ ║
+║  │  5. CAPTURE LEARNINGS                                   │ ║
 ║  │     🔮 Oracle: Synthesize insights from session         │ ║
 ║  │     Create retrospective lesson for future sessions     │ ║
 ║  └─────────────────────────────────────────────────────────┘ ║
@@ -253,7 +260,19 @@ Check Project State
 ║  │  4. Run test → Confirm still PASSES                     │ ║
 ║  └────────────────────────┬────────────────────────────────┘ ║
 ║                           ▼                                  ║
-║  ✓ COMMIT                                                    ║
+║  🌐 BROWSER TEST (if UI relevant)                            ║
+║  ┌─────────────────────────────────────────────────────────┐ ║
+║  │  1. Determine if task affects UI (pages, components)    │ ║
+║  │  2. If YES: Run agent-browser verification              │ ║
+║  │     a. Open affected page in browser                    │ ║
+║  │     b. Get interactive snapshot                         │ ║
+║  │     c. Verify expected elements exist                   │ ║
+║  │     d. Test key interactions                            │ ║
+║  │  3. If test fails: Debug with Oracle, fix, re-test      │ ║
+║  │  4. If NO UI impact: Skip browser test                  │ ║
+║  └────────────────────────┬────────────────────────────────┘ ║
+║                           ▼                                  ║
+║  ✓ COMMIT (only after browser test passes)                   ║
 ║  ┌─────────────────────────────────────────────────────────┐ ║
 ║  │  git add -A                                             │ ║
 ║  │  git commit -m "feat: [feature] with tests"             │ ║
@@ -290,13 +309,44 @@ Check Project State
 ║  Running tests... ✓ PASS                                     ║
 ╚══════════════════════════════════════════════════════════════╝
 
+╔══════════════════════════════════════════════════════════════╗
+║  🌐 BROWSER TEST: User Profile Page                          ║
+╠══════════════════════════════════════════════════════════════╣
+║  Page: http://localhost:3000/profile                         ║
+║                                                              ║
+║  Verifying elements:                                         ║
+║  ✓ User name displayed (@e1)                                 ║
+║  ✓ Email displayed (@e2)                                     ║
+║  ✓ Avatar loaded (@e3)                                       ║
+║  ✓ Loading skeleton renders correctly                        ║
+║                                                              ║
+║  Result: ✅ PASS                                             ║
+╚══════════════════════════════════════════════════════════════╝
+
 ✓ Committed: "feat: add user profile page with tests"
 ```
 
-#### Oracle & Librarian During TDD
+#### Oracle, Librarian & Browser Testing During TDD
 
 ```
+BROWSER TEST TRIGGERS:
+├─ Task modifies app/ pages or routes → Run browser test
+├─ Task modifies components/ UI components → Run browser test
+├─ Task adds user-facing features → Run browser test
+├─ Task changes styling or layout → Run browser test
+├─ Backend-only change (convex/) → Skip browser test
+├─ Config/docs only → Skip browser test
+
+BROWSER TEST COMMANDS:
+├─ agent-browser open http://localhost:3000/[page]
+├─ agent-browser snapshot -i    (get interactive elements)
+├─ agent-browser click @e[n]    (click element by ref)
+├─ agent-browser fill @e[n] "text"  (fill input)
+├─ agent-browser is visible "[selector]"
+├─ agent-browser screenshot [path]
+
 ORACLE TRIGGERS:
+├─ Browser test fails → "Consulting Oracle to debug UI issue..."
 ├─ Test fails after GREEN phase → "Consulting Oracle to debug..."
 ├─ TypeScript errors persist → "Asking Oracle to analyze..."
 ├─ Unclear how to test something → "Oracle: how should I test this?"
