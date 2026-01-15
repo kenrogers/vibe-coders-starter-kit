@@ -116,6 +116,7 @@ Instead of writing prompts from scratch each session, you use a single command t
 │  2. DO      - Execute with TDD (Red-Green-Refactor)         │
 │  3. VERIFY  - Browser test UI changes with agent-browser    │
 │  4. CAPTURE - Save learnings for next time                  │
+│  5. HANDOFF - Fresh thread after each task for quality      │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -142,6 +143,7 @@ This prevents the AI from "cheating" by designing tests around implementations i
 | **Lost context between sessions** | Reads project state and picks up where you left off          |
 | **Forgotten lessons**             | Prompts you to capture learnings when work completes         |
 | **Vague AI prompts**              | Plans are structured, executable, and atomic (2-3 tasks max) |
+| **Context degradation**           | Auto-handoff to fresh thread after each atomic task          |
 
 ### How It Works
 
@@ -178,6 +180,7 @@ Skills are specialized instructions that activate when you need them. They encod
 ├── gsd/                # Project management and planning system
 ├── tdd/                # Test-Driven Development patterns and setup
 ├── frontend-design/    # UI patterns that avoid generic AI aesthetics
+├── vercel-skills/      # Deployment and React best practices (git subtree)
 └── lessons/            # YOUR learnings (grows over time)
 ```
 
@@ -188,6 +191,9 @@ When you describe a task that matches a skill, the AI loads it automatically:
 - "Add rate limiting to this endpoint" → loads `rate-limiting` skill
 - "Build a landing page" → loads `frontend-design` skill
 - "Protect this form from CSRF" → loads `csrf-protection` skill
+- "Generate an app icon" → loads `painter` skill for AI image generation
+- "Deploy my app" → loads `vercel-deploy` skill
+- "Update the vercel skills" → loads `subtree-skill-updater` for pulling upstream changes
 
 ### The Learning System
 
