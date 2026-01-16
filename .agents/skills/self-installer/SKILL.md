@@ -128,7 +128,10 @@ Now let's set up webhooks. In your Clerk dashboard:
 
 1. Go to Webhooks
 2. Create a new webhook endpoint:
-   - URL: {NEXT_PUBLIC_CONVEX_URL}/api/webhooks/clerk
+   - URL: Use your Convex **HTTP Actions URL** (NOT the Deployment URL)
+     - Find it in Convex Dashboard > Settings > URL & Deploy Key > HTTP Actions URL
+     - It ends in `.convex.site` (e.g., https://your-project-123.convex.site)
+     - Append the webhook path: https://your-project-123.convex.site/clerk-users-webhook
    - Events: Select all user events and session events
 
 3. Copy the Signing Secret
